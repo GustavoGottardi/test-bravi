@@ -1,0 +1,93 @@
+<section>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-md-6">
+                <h1>{{ title }}</h1>
+                <div class="messages">
+                    <div *ngIf=setSaved class="alert alert-success" role="alert">
+                        Seu contato foi salvo com sucesso!
+                    </div>
+                    <div *ngIf=setEdited class="alert alert-success" role="alert">
+                        Seu contato foi editado com sucesso!
+                    </div>
+                </div>
+                <form #contactForm="ngForm">
+                    <div class="form-group">
+                        <label for="nome">Nome:</label>
+                        <input type="text" [(ngModel)]="contact.name" #name="ngModel" [ngModelOptions]="{standalone: true}" class="form-control" id="name" name="name" placeholder="Insira seu nome" pattern="[a-zA-Z][a-zA-Z ]+" required />
+                        <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
+                            <div [hidden]="!name.hasError('required')">Nome é obrigatório!</div>
+                            <div [hidden]="!name.hasError('pattern')">Somente caracteres alfabéticos são permitidos!</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="text" [(ngModel)]="contact.email" #email="ngModel" [ngModelOptions]="{standalone: true}" class="form-control" id="email" name="email" placeholder="Insira seu email" 
+                        pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"  required />
+                        <div [hidden]="email.valid || email.pristine" class="alert alert-danger">
+                            <div [hidden]="!email.hasError('required')">Email é obrigatório</div>
+                            <div [hidden]="!email.hasError('pattern')">Um email válido é necessário: 
+                                <small><b>joe@abc.com</b></small>
+                            </div>
+                        </div>
+                    
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Telefone:</label>
+                        <input type="tel" [(ngModel)]="contact.phone" #phone="ngModel" [ngModelOptions]="{standalone: true}" class="form-control" id="phone" placeholder="Insira seu telefone" pattern="[0-9]*" minlength="9" maxlength="10" required />
+                        <div [hidden]="phone.valid || phone.pristine" class="alert alert-danger">
+                            <div [hidden]="!phone.hasError('minlength')">Telefone deve ter no mínimo 9 digitos</div>
+                            <div [hidden]="!phone.hasError('required')">Telefone é obrigatório!</div>
+                            <div [hidden]="!phone.hasError('pattern')">Somente números são aceitos</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="whatsapp">whatsapp:</label>
+                        <input type="tel" [(ngModel)]="contact.whatsapp" #whatsapp="ngModel" [ngModelOptions]="{standalone: true}" class="form-control" id="whatsapp" placeholder="Insira seu whatsapp" pattern="[0-9]*" minlength="10" maxlength="10" required />
+                        <div [hidden]="whatsapp.valid || whatsapp.pristine" class="alert alert-danger">
+                            <div [hidden]="!whatsapp.hasError('minlength')">Whatsapp deve ter no mínimo 9 digitos</div>
+                            <div [hidden]="!whatsapp.hasError('required')">Whatsapp é obrigatório!</div>
+                            <div [hidden]="!whatsapp.hasError('pattern')">Somente números são aceitos</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" [disabled]="contactForm.invalid" *ngIf=!setEditToggle (click)="saveContact(contact)" class="btn">Cadastrar Usuário</button>
+                        <button type="submit" [disabled]="contactForm.invalid" *ngIf=setEditToggle (click)="editContact(contact)" class="btn">Editar Usuário</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid no-padding">
+        <div class="row justify-content-center no-gutters">
+            <div class="col-sm-12 no-gutters">
+                <div *ngIf=setDeleted class="alert alert-success" role="alert">
+                    Seu contato foi excluido com sucesso!
+                </div>
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Telefone</th>
+                        <th scope="col">Whatsapp</th>
+                        <th scope="col">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor='let contacts of contactsList'>
+                            <td>{{ contacts.name }}</td>
+                            <td>{{ contacts.email }}</td>
+                            <td>{{ contacts.phone }}</td>
+                            <td>{{ contacts.whatsapp }}</td>
+                            <td>
+                                <a (click)="setEdit(contacts)" title="Editar"><i class="fas fa-user-edit"></i></a> | 
+                                <a (click)="deleteContact(contacts._id)" title="Excluir"><i class="fas fa-trash-alt"></i></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,22 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css?family=Lato');
+@import './assets/variables.scss';
+@import './app/app.component.scss';
+@import './balancedBrackets/balanced.component.scss';
+@import "~bootstrap/scss/bootstrap";
+
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Lato', sans-serif;
+
+    h1{
+        margin: 30px 0 20px;
+        color: $blue_light;
+    }
+
+    button{
+        background: $blue_light;
+        color: $white;
+    }
+}

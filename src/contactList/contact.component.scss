@@ -1,0 +1,13 @@
+@import '../assets/variables.scss';
+
+.no-padding{
+    padding: 0;
+}
+
+a{
+    color: $blue_light!important;
+    cursor: pointer;
+    &:hover{
+        text-decoration: underline!important;
+    }
+}

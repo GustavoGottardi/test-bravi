@@ -1,0 +1,25 @@
+@import '../assets/_variables.scss';
+
+header{
+    width: 100%;
+    background: $blue_light;
+    padding: 20px 30px;
+    color: #fff;
+    text-align: center;
+
+    img{
+        margin-bottom: 20px;
+    }
+
+    nav{
+        a{
+            padding: 0 15px;
+            color: #fff;
+            text-transform: uppercase;
+            text-decoration: none;
+            &:hover{
+                text-decoration: underline;
+            }
+        }
+    }
+}
