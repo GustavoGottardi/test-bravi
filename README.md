@@ -1,5 +1,5 @@
 # TestBravi
-
+Projeto de CRUD simples com NodeJS + Angular 6.
 
 ## Rodar Projeto
 - Rode npm install
