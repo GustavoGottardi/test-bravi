@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, OnInit, Pipe } from '@angular/core';
 import { ContactService } from './contact.service';
-import { FormGroup, FormControl, FormBuilder, NG_VALIDATORS, Validator, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, NG_VALIDATORS, Validator, Validators, AbstractControl, ValidatorFn, NgForm } from '@angular/forms';
+import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 
 @Component({
     selector: 'contact-list',
@@ -10,7 +11,7 @@ import { FormGroup, FormControl, FormBuilder, NG_VALIDATORS, Validator, Validato
         ContactService
     ]
 })
-export class ContactListComponent{
+export class ContactListComponent implements OnInit{
     title: String = null;
     contact: {};
     contactsList: Array<String>;
@@ -18,13 +19,23 @@ export class ContactListComponent{
     setSaved: Boolean;
     setEdited: Boolean;
     setDeleted: Boolean;
+    idEdit: String
 
-    contactForm = new FormGroup({
-        name: new FormControl(''),
-        email: new FormControl(''),
-        phone: new FormControl(''),
-        whatsapp: new FormControl('')
-    });
+    contactForm: FormGroup;
+    name: FormControl;
+    email: FormControl;
+    phone: FormControl;
+    whatsapp: FormControl;
+
+    // @ViewChild('contactForm')
+    // private contactForm: NgForm;
+
+    // this.contactForm = new FormGroup({
+    //     name: new FormControl(),
+    //     email: new FormControl(),
+    //     phone: new FormControl(),
+    //     whatsapp: new FormControl()
+    // });
 
     constructor(private _service: ContactService) { 
         this.contact = {};
@@ -34,7 +45,43 @@ export class ContactListComponent{
         this.setSaved = false;
         this.setEdited = false;
         this.setDeleted = false;
+        this.idEdit = null;
         this.getContacts();
+    }
+
+    ngOnInit() {
+        this.createFormControls({name: '', email: '', phone: '', whatsapp: ''});
+        this.createForm();
+    }
+
+    createFormControls(form) {
+        this.name = new FormControl(form.name, [
+            Validators.required,
+            Validators.pattern("[a-zA-Z][a-zA-Z ]+")
+        ]);
+        this.email = new FormControl(form.email, [
+          Validators.required,
+          Validators.pattern("[^ @]*@[^ @]*")
+        ]);
+        this.phone = new FormControl(form.phone, [
+          Validators.required,
+          Validators.minLength(9),
+          Validators.pattern("[0-9]*")
+        ]);
+        this.whatsapp = new FormControl(form.whatsapp, [
+            Validators.required,
+            Validators.minLength(9),
+            Validators.pattern("[0-9]*")
+        ]);
+    }
+
+    createForm() {
+        this.contactForm = new FormGroup({
+            name: this.name,
+            email: this.email,
+            phone: this.phone,
+            whatsapp: this.whatsapp
+        });
     }
 
     getContacts(){
@@ -42,7 +89,17 @@ export class ContactListComponent{
       		.subscribe((response) => {
                 this.contactsList = response;
             });
-	}
+    }
+    
+    onSubmit(form) {
+        if (this.contactForm.valid) {
+            if(!this.setEditToggle) {
+                this.saveContact(form);
+            } else {
+                this.editContact(form);
+            }
+        }
+    }
 
     saveContact(form) {
         this._service.save(form)
@@ -67,6 +124,8 @@ export class ContactListComponent{
     }
 
     editContact(form) {
+        form._id = this.idEdit;
+        this.idEdit = null;
         this._service.update(form)
             .subscribe(res => {
                 this.showMessage('edited');
@@ -80,7 +139,9 @@ export class ContactListComponent{
 
     setEdit(form) {
         this.setEditToggle = true;
-        this.contact = form;
+        this.idEdit = form._id;
+        this.createFormControls(form);
+        this.createForm();
     }
 
     showMessage(message) {
